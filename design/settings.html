@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PONG.IO - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            overflow-x: hidden;
+        }
+
+        /* Space background with depth layers */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a1f3a 0%, #0a0e27 70%, #000000 100%);
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .starfield::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, white, transparent),
+                radial-gradient(1px 1px at 25% 45%, white, transparent),
+                radial-gradient(1px 1px at 40% 70%, white, transparent),
+                radial-gradient(1px 1px at 55% 15%, white, transparent),
+                radial-gradient(1px 1px at 70% 50%, white, transparent),
+                radial-gradient(1px 1px at 85% 80%, white, transparent),
+                radial-gradient(1px 1px at 15% 65%, white, transparent),
+                radial-gradient(1px 1px at 90% 30%, white, transparent),
+                radial-gradient(1px 1px at 35% 90%, white, transparent),
+                radial-gradient(1px 1px at 60% 40%, white, transparent),
+                radial-gradient(1px 1px at 20% 85%, white, transparent),
+                radial-gradient(1px 1px at 75% 25%, white, transparent),
+                radial-gradient(1px 1px at 45% 55%, white, transparent),
+                radial-gradient(1px 1px at 80% 65%, white, transparent),
+                radial-gradient(1px 1px at 30% 35%, white, transparent);
+            background-size: 250px 250px;
+            animation: starMove 120s linear infinite;
+            opacity: 0.5;
+        }
+
+        .starfield::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                radial-gradient(2px 2px at 15% 30%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 35% 60%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 55% 25%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(3px 3px at 75% 75%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 20% 80%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 65% 40%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 85% 20%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(3px 3px at 40% 85%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 90% 55%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 25% 50%, rgba(255, 255, 255, 1), transparent);
+            background-size: 300px 300px;
+            animation: starMove 60s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes starMove {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50px, -50px) rotate(360deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            border-bottom: 2px solid #00ff41;
+            background: rgba(10, 14, 39, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            color: #ff00ff;
+            text-shadow: 
+                2px 2px 0px #00ffff,
+                4px 4px 0px #ffff00,
+                0 0 20px #ff00ff;
+            letter-spacing: 3px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff00ff;
+            transition: width 0.3s;
+        }
+
+        .nav a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav a.active {
+            color: #ffff00;
+            text-shadow: 0 0 15px #ffff00;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: 2px solid #00ff41;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .username {
+            color: #ffff00;
+            font-size: 14px;
+        }
+
+        /* Page Title */
+        .page-title {
+            text-align: center;
+            padding: 60px 20px 40px;
+        }
+
+        .page-title h2 {
+            font-size: 56px;
+            color: #00ffff;
+            text-shadow: 
+                3px 3px 0px #ff00ff,
+                6px 6px 0px #ffff00,
+                0 0 30px #00ffff;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-3px, 3px); }
+            94% { transform: translate(3px, -3px); }
+        }
+
+        .page-title p {
+            font-size: 16px;
+            color: #00ff41;
+            letter-spacing: 2px;
+        }
+
+        /* Settings Container */
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
+        }
+
+        /* Settings Section */
+        .settings-section {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
+            border: 3px solid #00ff41;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .settings-section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.4;
+        }
+
+        .settings-section:nth-child(1) {
+            border-color: #ff00ff;
+        }
+
+        .settings-section:nth-child(1)::before {
+            background: linear-gradient(45deg, #ff00ff, #ff00ff);
+        }
+
+        .settings-section:nth-child(2) {
+            border-color: #00ffff;
+        }
+
+        .settings-section:nth-child(2)::before {
+            background: linear-gradient(45deg, #00ffff, #00ffff);
+        }
+
+        .settings-section:nth-child(3) {
+            border-color: #ffff00;
+        }
+
+        .settings-section:nth-child(3)::before {
+            background: linear-gradient(45deg, #ffff00, #ffff00);
+        }
+
+        .settings-section:nth-child(4) {
+            border-color: #00ff41;
+        }
+
+        .settings-section:nth-child(4)::before {
+            background: linear-gradient(45deg, #00ff41, #00ff41);
+        }
+
+        .section-header {
+            padding: 25px 30px;
+            border-bottom: 2px solid rgba(0, 255, 65, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 5px;
+        }
+
+        .settings-section:nth-child(1) .section-title {
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+        }
+
+        .settings-section:nth-child(2) .section-title {
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .settings-section:nth-child(3) .section-title {
+            color: #ffff00;
+            text-shadow: 0 0 15px #ffff00;
+        }
+
+        .settings-section:nth-child(4) .section-title {
+            color: #00ff41;
+            text-shadow: 0 0 15px #00ff41;
+        }
+
+        .section-description {
+            font-size: 12px;
+            color: #00ff41;
+            opacity: 0.8;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        /* Setting Item */
+        .setting-item {
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-label {
+            font-size: 16px;
+            color: #00ffff;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .setting-desc {
+            font-size: 12px;
+            color: #00ff41;
+            opacity: 0.7;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff41;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: rgba(255, 0, 255, 0.3);
+            border-color: #ff00ff;
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: #00ff41;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 32px;
+            background: #ff00ff;
+            box-shadow: 0 0 10px #ff00ff;
+        }
+
+        /* Select Dropdown */
+        .select-wrapper {
+            position: relative;
+            min-width: 200px;
+        }
+
+        .select {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .select:hover,
+        .select:focus {
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            outline: none;
+        }
+
+        /* Range Slider */
+        .range-wrapper {
+            min-width: 250px;
+        }
+
+        .range-value {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #ff00ff;
+            font-weight: bold;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ffff;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #ff00ff;
+            cursor: pointer;
+            box-shadow: 0 0 15px #ff00ff;
+        }
+
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #ff00ff;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 15px #ff00ff;
+        }
+
+        /* Input Field */
+        .input-wrapper {
+            min-width: 250px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+
+        /* Button */
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+            border: none;
+            color: #0a0e27;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px #ff00ff;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0000 0%, #ff00ff 100%);
+            margin-left: 10px;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 25px #ff0000;
+        }
+
+        /* Save Button Container */
+        .save-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        /* Scanline effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 65, 0.2);
+            animation: scan 6s linear infinite;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"></div>
+    <div class="scanline"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>PONG.IO</h1>
+            </div>
+            <nav class="nav">
+                <a href="#">Home</a>
+                <a href="#">Play</a>
+                <a href="#">Leaderboard</a>
+                <a href="#" class="active">Settings</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">P1</div>
+                <span class="username">PLAYER_ONE</span>
+            </div>
+        </header>
+
+        <!-- Page Title -->
+        <div class="page-title">
+            <h2>SETTINGS</h2>
+            <p>// CONFIGURE YOUR GAMING EXPERIENCE //</p>
+        </div>
+
+        <!-- Settings Container -->
+        <div class="settings-container">
+            <!-- Account Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-title">// ACCOUNT //</div>
+                    <div class="section-description">Manage your profile and account preferences</div>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Username</div>
+                            <div class="setting-desc">Your display name in the arena</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="text" class="input-field" value="PLAYER_ONE" placeholder="Enter username">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Email Address</div>
+                            <div class="setting-desc">Used for account recovery and notifications</div>
+                        </div>
+                        <div class="input-wrapper">
+                            <input type="email" class="input-field" value="player@retro.io" placeholder="Enter email">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Profile Visibility</div>
+                            <div class="setting-desc">Allow others to view your profile</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-title">// GAMEPLAY //</div>
+                    <div class="section-description">Customize your in-game experience</div>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Difficulty Level</div>
+                            <div class="setting-desc">Adjust AI opponent difficulty</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="select">
+                                <option>Easy</option>
+                                <option selected>Medium</option>
+                                <option>Hard</option>
+                                <option>Insane</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Paddle Speed</div>
+                            <div class="setting-desc">Control your paddle sensitivity</div>
+                        </div>
+                        <div class="range-wrapper">
+                            <div class="range-value" id="paddleValue">75%</div>
+                            <input type="range" class="range-slider" min="0" max="100" value="75" oninput="updateValue('paddleValue', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Ball Speed</div>
+                            <div class="setting-desc">Adjust game ball velocity</div>
+                        </div>
+                        <div class="range-wrapper">
+                            <div class="range-value" id="ballValue">60%</div>
+                            <input type="range" class="range-slider" min="0" max="100" value="60" oninput="updateValue('ballValue', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Screen Shake</div>
+                            <div class="setting-desc">Enable visual effects on impact</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Audio & Visual Settings -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-title">// AUDIO & VISUAL //</div>
+                    <div class="section-description">Customize sound and display settings</div>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Master Volume</div>
+                            <div class="setting-desc">Overall game audio level</div>
+                        </div>
+                        <div class="range-wrapper">
+                            <div class="range-value" id="volumeValue">80%</div>
+                            <input type="range" class="range-slider" min="0" max="100" value="80" oninput="updateValue('volumeValue', this.value)">
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Sound Effects</div>
+                            <div class="setting-desc">Toggle game sound effects</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Background Music</div>
+                            <div class="setting-desc">Toggle retro background music</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Visual Theme</div>
+                            <div class="setting-desc">Choose your preferred color scheme</div>
+                        </div>
+                        <div class="select-wrapper">
+                            <select class="select">
+                                <option selected>Cyber Neon</option>
+                                <option>Classic Green</option>
+                                <option>Vaporwave</option>
+                                <option>Matrix</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Particle Effects</div>
+                            <div class="setting-desc">Enable glowing trail effects</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy & Notifications -->
+            <div class="settings-section">
+                <div class="section-header">
+                    <div class="section-title">// PRIVACY & NOTIFICATIONS //</div>
+                    <div class="section-description">Control your privacy and alert preferences</div>
+                </div>
+                <div class="section-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Match Invites</div>
+                            <div class="setting-desc">Receive game invitations from friends</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Chat Messages</div>
+                            <div class="setting-desc">Allow direct messages from other players</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Friend Requests</div>
+                            <div class="setting-desc">Accept friend requests from players</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Show Online Status</div>
+                            <div class="setting-desc">Display when you're online to others</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">Email Notifications</div>
+                            <div class="setting-desc">Receive updates via email</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)">
+                            <div class="toggle-slider"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save & Danger Zone -->
+            <div class="save-container">
+                <button class="btn">[ SAVE CHANGES ]</button>
+                <button class="btn btn-danger">[ DELETE ACCOUNT ]</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSwitch(element) {
+            element.classList.toggle('active');
+        }
+
+        function updateValue(elementId, value) {
+            document.getElementById(elementId).textContent = value + '%';
+        }
+    </script>
+</body>
+</html>
