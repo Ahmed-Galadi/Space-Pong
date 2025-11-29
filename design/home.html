@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPACE PONG - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0e27;
+            color: #00ff41;
+            overflow-x: hidden;
+        }
+
+        /* Space background with depth layers */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center, #1a1f3a 0%, #0a0e27 70%, #000000 100%);
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .starfield::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, white, transparent),
+                radial-gradient(1px 1px at 25% 45%, white, transparent),
+                radial-gradient(1px 1px at 40% 70%, white, transparent),
+                radial-gradient(1px 1px at 55% 15%, white, transparent),
+                radial-gradient(1px 1px at 70% 50%, white, transparent),
+                radial-gradient(1px 1px at 85% 80%, white, transparent),
+                radial-gradient(1px 1px at 15% 65%, white, transparent),
+                radial-gradient(1px 1px at 90% 30%, white, transparent),
+                radial-gradient(1px 1px at 35% 90%, white, transparent),
+                radial-gradient(1px 1px at 60% 40%, white, transparent),
+                radial-gradient(1px 1px at 20% 85%, white, transparent),
+                radial-gradient(1px 1px at 75% 25%, white, transparent),
+                radial-gradient(1px 1px at 45% 55%, white, transparent),
+                radial-gradient(1px 1px at 80% 65%, white, transparent),
+                radial-gradient(1px 1px at 30% 35%, white, transparent);
+            background-size: 250px 250px;
+            animation: starMove 120s linear infinite;
+            opacity: 0.5;
+        }
+
+        .starfield::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background-image: 
+                radial-gradient(2px 2px at 15% 30%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 35% 60%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 55% 25%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(3px 3px at 75% 75%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 20% 80%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 65% 40%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 85% 20%, rgba(255, 255, 255, 0.9), transparent),
+                radial-gradient(3px 3px at 40% 85%, rgba(255, 255, 255, 1), transparent),
+                radial-gradient(2px 2px at 90% 55%, rgba(255, 255, 255, 0.8), transparent),
+                radial-gradient(3px 3px at 25% 50%, rgba(255, 255, 255, 1), transparent);
+            background-size: 300px 300px;
+            animation: starMove 60s linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes starMove {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50px, -50px) rotate(360deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            border-bottom: 2px solid #00ff41;
+            background: rgba(10, 14, 39, 0.8);
+            box-shadow: 0 4px 20px rgba(0, 255, 65, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            color: #ff00ff;
+            text-shadow: 
+                2px 2px 0px #00ffff,
+                4px 4px 0px #ffff00,
+                0 0 20px #ff00ff;
+            letter-spacing: 3px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav a {
+            color: #00ffff;
+            text-decoration: none;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #ff00ff;
+            transition: width 0.3s;
+        }
+
+        .nav a:hover {
+            color: #ff00ff;
+            text-shadow: 0 0 10px #ff00ff;
+        }
+
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: 2px solid #00ff41;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .username {
+            color: #ffff00;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-size: 64px;
+            color: #ff00ff;
+            text-shadow: 
+                3px 3px 0px #00ffff,
+                6px 6px 0px #ffff00,
+                0 0 30px #ff00ff;
+            letter-spacing: 5px;
+            margin-bottom: 20px;
+            animation: glitch 2s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-3px, 3px); }
+            94% { transform: translate(3px, -3px); }
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #00ffff;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+        }
+
+        /* Action Cards */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 60px;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
+            border: 3px solid;
+            padding: 45px 35px;
+            text-align: center;
+            position: relative;
+            transition: all 0.4s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .action-card:nth-child(1) {
+            border-color: #ff00ff;
+        }
+
+        .action-card:nth-child(2) {
+            border-color: #00ffff;
+        }
+
+        .action-card:nth-child(3) {
+            border-color: #ffff00;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .action-card:nth-child(1)::before {
+            background: linear-gradient(45deg, #ff00ff, #ff00ff);
+        }
+
+        .action-card:nth-child(2)::before {
+            background: linear-gradient(45deg, #00ffff, #00ffff);
+        }
+
+        .action-card:nth-child(3)::before {
+            background: linear-gradient(45deg, #ffff00, #ffff00);
+        }
+
+        .action-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-12px) scale(1.02);
+        }
+
+        .action-card:hover::before {
+            opacity: 0.7;
+        }
+
+        .action-card:hover::after {
+            left: 100%;
+        }
+
+        .action-card:nth-child(1):hover {
+            box-shadow: 0 15px 50px rgba(255, 0, 255, 0.6);
+        }
+
+        .action-card:nth-child(2):hover {
+            box-shadow: 0 15px 50px rgba(0, 255, 255, 0.6);
+        }
+
+        .action-card:nth-child(3):hover {
+            box-shadow: 0 15px 50px rgba(255, 255, 0, 0.6);
+        }
+
+        .action-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 25px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon svg {
+            width: 60px;
+            height: 60px;
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .action-card:nth-child(1) .action-icon svg {
+            color: #ff00ff;
+        }
+
+        .action-card:nth-child(2) .action-icon svg {
+            color: #00ffff;
+        }
+
+        .action-card:nth-child(3) .action-icon svg {
+            color: #ffff00;
+        }
+
+        .action-card h3 {
+            font-size: 26px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .action-card:nth-child(1) h3 {
+            color: #ff00ff;
+            text-shadow: 0 0 15px #ff00ff;
+        }
+
+        .action-card:nth-child(2) h3 {
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        .action-card:nth-child(3) h3 {
+            color: #ffff00;
+            text-shadow: 0 0 15px #ffff00;
+        }
+
+        .action-card p {
+            font-size: 14px;
+            color: #00ff41;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+            border: none;
+            color: #0a0e27;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #ff00ff;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0;
+            padding: 0;
+            background: rgba(10, 14, 39, 0.95);
+            border-top: 3px solid #00ff41;
+            border-bottom: 3px solid #00ff41;
+            margin: 50px 0;
+            overflow: hidden;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 40px 20px;
+            border-right: 2px solid rgba(0, 255, 65, 0.3);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(180deg, rgba(255, 0, 255, 0.2), transparent);
+            transition: height 0.3s;
+        }
+
+        .stat-item:hover::before {
+            height: 100%;
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 0, 255, 0.1);
+        }
+
+        .stat-item:nth-child(1) .stat-value {
+            color: #ff00ff;
+            text-shadow: 0 0 20px #ff00ff;
+        }
+
+        .stat-item:nth-child(2) .stat-value {
+            color: #00ffff;
+            text-shadow: 0 0 20px #00ffff;
+        }
+
+        .stat-item:nth-child(3) .stat-value {
+            color: #ffff00;
+            text-shadow: 0 0 20px #ffff00;
+        }
+
+        .stat-item:nth-child(4) .stat-value {
+            color: #00ff41;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: #00ff41;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Active Players */
+        .active-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 80px;
+        }
+
+        .section-title {
+            font-size: 32px;
+            color: #00ff41;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-align: center;
+            text-shadow: 0 0 20px #00ff41;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+        }
+
+        .players-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .player-card {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.95) 0%, rgba(10, 14, 39, 0.95) 100%);
+            border: 2px solid #00ffff;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .player-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+            transform: translateX(-100%);
+            transition: transform 0.5s;
+        }
+
+        .player-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .player-card:hover {
+            border-color: #ff00ff;
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .player-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            border: 3px solid #00ff41;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 26px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .player-name {
+            color: #00ff41;
+            font-size: 16px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .player-status {
+            color: #00ffff;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-online {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        /* Scanline effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 65, 0.2);
+            animation: scan 6s linear infinite;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="starfield"></div>
+    <div class="scanline"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>SPACE PONG</h1>
+            </div>
+            <nav class="nav">
+                <a href="#">Home</a>
+                <a href="#">Play</a>
+                <a href="#">Leaderboard</a>
+                <a href="#">Settings</a>
+            </nav>
+            <div class="user-info">
+                <div class="user-avatar">P1</div>
+                <span class="username">PLAYER_ONE</span>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>WELCOME BACK</h2>
+            <p>// READY TO DOMINATE THE ARENA? //</p>
+        </section>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value">847</div>
+                <div class="stat-label">Total Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">23</div>
+                <div class="stat-label">Wins</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">15</div>
+                <div class="stat-label">Losses</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">#12</div>
+                <div class="stat-label">Rank</div>
+            </div>
+        </div>
+
+        <!-- Action Cards -->
+        <div class="action-grid">
+            <div class="action-card">
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+                        <polyline points="17 2 12 7 7 2"></polyline>
+                    </svg>
+                </div>
+                <h3>Quick Match</h3>
+                <p>Jump into a random match against online players</p>
+                <button class="btn">[ FIND OPPONENT ]</button>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3>Invite Friend</h3>
+                <p>Challenge your friends to a private match</p>
+                <button class="btn">[ CREATE ROOM ]</button>
+            </div>
+
+            <div class="action-card">
+                <div class="action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                        <path d="M4 22h16"></path>
+                        <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                        <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                        <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                    </svg>
+                </div>
+                <h3>View Rankings</h3>
+                <p>Check out the top players on the leaderboard</p>
+                <button class="btn">[ LEADERBOARD ]</button>
+            </div>
+        </div>
+
+        <!-- Active Players -->
+        <section class="active-section">
+            <h2 class="section-title">[ ACTIVE PLAYERS ]</h2>
+            <div class="players-list">
+                <div class="player-card">
+                    <div class="player-avatar">X1</div>
+                    <div class="player-name">player_1</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-avatar">N3</div>
+                    <div class="player-name">player_2</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-avatar">R4</div>
+                    <div class="player-name">player_3</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-avatar">P5</div>
+                    <div class="player-name">player_4</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-avatar">S8</div>
+                    <div class="player-name">player_5</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+                <div class="player-card">
+                    <div class="player-avatar">V7</div>
+                    <div class="player-name">player_6</div>
+                    <div class="player-status status-online">● ONLINE</div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
